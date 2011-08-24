@@ -1,9 +1,20 @@
+class Plateau
+  attr_accessor :width, :height
+  def initialize width, height
+    self.width, self.height = width, height
+  end
+  def inside? x, y
+    x>0 && y>0 && x<self.width && y<self.height
+  end
+end
+
 class MarsRover
   attr_accessor :path, :x, :y, :direction, :plateau
   
   def initialize x, y, direction, plateau
     self.x, self.y, self.direction, self.plateau = x, y, direction, plateau
     init_directions
+    init_actions
   end
   
   def init_directions
@@ -16,6 +27,14 @@ class MarsRover
     @directions.rotate!(['E','N','W','S'].index self.direction)
   end
   
+  def init_actions
+    @actions = {
+      'L' => lambda{ left },
+      'R' => lambda{ right },
+      'M' => lambda{ move }
+    }
+  end
+
   def left
     @directions.rotate!
   end
@@ -40,33 +59,10 @@ class MarsRover
   end
   
   def movement path
-    path.upcase.split('').each do |action| 
-      case action
-        when 'L' 
-          left
-        when 'R'
-          right
-        when 'M'
-          move
-      end
-    end
+    path.upcase.split('').each { |action| @actions[action].call }
+  end
+
+  def result
+    "#{self.x} #{self.y} #{@directions[0][:direction]}"
   end
 end
-
-class Plateau
-  attr_accessor :width, :height
-  def initialize width, height
-    self.width, self.height = width, height   
-  end
-  def inside? x, y
-    x>0 && y>0 && x<self.width && y<self.height
-  end
-end
-
-# usage
-plateau = Plateau.new 5,5
-first_marsrover = MarsRover.new 1, 2, 'N', plateau
-first_marsrover.movement 'LMLMLMLMM'
-
-second_marsrover = MarsRover.new 3,3,'E', plateau
-second_marsrover.movement 'MMRMMRMRRM'
