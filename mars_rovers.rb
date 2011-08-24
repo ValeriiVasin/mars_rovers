@@ -66,3 +66,17 @@ class MarsRover
     "#{self.x} #{self.y} #{@directions[0][:direction]}"
   end
 end
+
+data = File.open('input.txt', 'r'){ |file| file.read }.split("\n");
+plateau_coords = data.shift.split().map { |element| element.to_i };
+plateau = Plateau.new *plateau_coords
+
+file = File.new('output.txt','w');
+n=data.length
+1.step(n,2) do |i|
+  x, y, direction = data[i-1].split()
+  mars_rover = MarsRover.new x.to_i, y.to_i, direction, plateau
+  mars_rover.movement data[i]
+  file.puts mars_rover.result
+end
+file.close
