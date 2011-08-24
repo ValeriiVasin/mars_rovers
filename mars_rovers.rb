@@ -4,7 +4,7 @@ class Plateau
     self.width, self.height = width, height
   end
   def inside? x, y
-    x>0 && y>0 && x<self.width && y<self.height
+    x>=0 && y>=0 && x<=self.width && y<=self.height
   end
 end
 
